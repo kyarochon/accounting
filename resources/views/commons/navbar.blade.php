@@ -16,9 +16,13 @@ avbar-collapse-1" aria-expanded="false">
                     @if (Auth::check())
                         <li>
                             <a href="{{route('circles.create')}}">
-                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                                サークルを作る
-                              </a>
+                                <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>サークルを作る
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{route('circles.index')}}">
+                                <span class="glyphicon glyphicon-search" aria-hidden="true"></span>サークルを探す
+                            </a>
                         </li>
 
                         <li class="dropdown">

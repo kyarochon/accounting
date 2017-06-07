@@ -13,7 +13,17 @@ class CirclesController extends Controller
 {
     public function index()
     {
-        //
+        $keyword = request()->keyword;
+        $circles = [];
+        
+        if ($keyword) {
+            $circles = Circle::where('name', 'LIKE', '%' . $keyword . '%')->get();
+        }
+
+        return view('circles.index', [
+            'keyword' => $keyword,
+            'circles' => $circles,
+        ]);
     }
 
     public function create()
@@ -32,6 +42,8 @@ class CirclesController extends Controller
         $circle->image_name = $request->image_name;
         $circle->save();
         
+        
+
         return redirect('/');
     }
 
