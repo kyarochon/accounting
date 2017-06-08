@@ -101,7 +101,7 @@ class User extends Model implements AuthenticatableContract,
     // 参加
     public function join($circleId)
     {
-        if ($this->hasJoined()) return false;
+        if ($this->hasJoined($circleId)) return false;
         $this->updateState($circleId, self::STATE_JOIN);
         return true;
     }
