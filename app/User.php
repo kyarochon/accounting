@@ -10,30 +10,102 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 
+use App\Circle;
+
 class User extends Model implements AuthenticatableContract,
                                     AuthorizableContract,
                                     CanResetPasswordContract
 {
     use Authenticatable, Authorizable, CanResetPassword;
-
-    /**
-     * The database table used by the model.
-     *
-     * @var string
-     */
+    
     protected $table = 'users';
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
     protected $fillable = ['name', 'email', 'password'];
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     *
-     * @var array
-     */
     protected $hidden = ['password', 'remember_token'];
+    
+    // state
+    const STATE_NONE    = 0;
+    const STATE_REQUEST = 1;
+    const STATE_REFUSE  = 2;
+    const STATE_JOIN    = 3;
+    
+    
+    // 
+    // 共通処理
+    // 
+    
+    // 
+    public function circles()
+    {
+        return $this->belongsToMany(Circle::class)->withPivot('state')->withTimestamps();
+    }
+    
+    // 中間テーブルに情報が存在しているか
+    public function existsCircleState($circleId)
+    {
+        return $this->circles()->where('circle_id', $circleId)->exists();
+    }
+    public function updateState($circleId, $state)
+    {
+        if ($this->existsCircleState($circleId)) 
+        {
+            $this->circles()->detach($circleId);
+        }
+        
+        $this->circles()->attach($circleId, ['state' => $state]);
+    }
+    
+
+    //
+    // リクエスト関連
+    //
+    
+    // 参加リクエスト申請
+    public function request($circleId)
+    {
+        if (!$this->canRequest($circleId)) return false;
+        $this->updateState($circleId, self::STATE_REQUEST);
+        return true;
+    }
+    // 参加リクエストキャンセル
+    public function cancelRequest($circleId)
+    {
+        if (!$this->canCancelRequest($circleId)) return false;
+        $this->updateState($circleId, self::STATE_NONE);
+        return true;
+    }
+    // リクエスト申請可能かどうか（参加していないサークルにのみ可能）
+    public function canRequest($circleId)
+    {
+        // そもそも情報が存在していなければ申請可能
+        if (!$this->existsCircleState($circleId)) return true;
+        
+        $notJoinedCircles = $this->circles()->where('state', self::STATE_NONE);
+        return $notJoinedCircles->where('circle_id', $circleId)->exists();
+    }
+    // リクエストキャンセル可能かどうか（リクエスト中のサークルにのみ可能）
+    public function canCancelRequest($circleId)
+    {
+        $requestedCircles = $this->circles()->where('state', self::STATE_REQUEST);
+        return $requestedCircles->where('circle_id', $circleId)->exists();
+    }
+    
+
+    //
+    // 参加関連
+    //
+    
+    // 参加
+    public function join($circleId)
+    {
+        if ($this->hasJoined()) return false;
+        $this->updateState($circleId, self::STATE_JOIN);
+        return true;
+    }
+    // 参加済かどうか
+    public function hasJoined($circleId)
+    {
+        $joinedCircles = $this->circles()->where('state', self::STATE_JOIN);
+        return $joinedCircles->where('circle_id', $circleId)->exists();
+    }
+
 }

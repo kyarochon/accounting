@@ -27,4 +27,8 @@ Route::get('logout', 'Auth\AuthController@getLogout')->name('logout.get');
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('users', 'UsersController', ['only' => 'show']);
     Route::resource('circles', 'CirclesController');
+    
+    // リクエスト関連
+    Route::post('request', 'CircleUserController@request')->name('circle_user.request');
+    Route::delete('request', 'CircleUserController@cancelRequest')->name('circle_user.cancel_request');
 });

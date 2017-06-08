@@ -12,7 +12,7 @@
                         </p>
                         <div class="buttons text-center">
                             @if (Auth::check())
-                                ボタンが入る
+                                @include('circles.request_button', ['circle' => $circle])
                             @endif
                         </div>
                     </div>

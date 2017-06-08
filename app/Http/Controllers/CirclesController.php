@@ -37,12 +37,14 @@ class CirclesController extends Controller
 
     public function store(Request $request)
     {
+        // サークル新規作成
         $circle = new Circle;
         $circle->name       = $request->name;
         $circle->image_name = $request->image_name;
         $circle->save();
         
-        
+        // サークルに作成ユーザを加入
+        \Auth::user()->join($circle->id);
 
         return redirect('/');
     }
