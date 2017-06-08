@@ -33,7 +33,7 @@ class User extends Model implements AuthenticatableContract,
     // 共通処理
     // 
     
-    // 
+    // ユーザに関連するcircle_userリストを取得
     public function circles()
     {
         return $this->belongsToMany(Circle::class)->withPivot('state')->withTimestamps();
@@ -44,6 +44,8 @@ class User extends Model implements AuthenticatableContract,
     {
         return $this->circles()->where('circle_id', $circleId)->exists();
     }
+    
+    // stateを更新
     public function updateState($circleId, $state)
     {
         if ($this->existsCircleState($circleId)) 
@@ -66,6 +68,7 @@ class User extends Model implements AuthenticatableContract,
         $this->updateState($circleId, self::STATE_REQUEST);
         return true;
     }
+    
     // 参加リクエストキャンセル
     public function cancelRequest($circleId)
     {
@@ -73,6 +76,7 @@ class User extends Model implements AuthenticatableContract,
         $this->updateState($circleId, self::STATE_NONE);
         return true;
     }
+    
     // リクエスト申請可能かどうか（参加していないサークルにのみ可能）
     public function canRequest($circleId)
     {
@@ -101,6 +105,7 @@ class User extends Model implements AuthenticatableContract,
         $this->updateState($circleId, self::STATE_JOIN);
         return true;
     }
+    
     // 参加済かどうか
     public function hasJoined($circleId)
     {
