@@ -51,21 +51,39 @@ class CirclesController extends Controller
 
     public function show($id)
     {
-        //
+        $circle = Circle::find($id);
+        
+        return view('circles.show', [
+            'circle' => $circle,
+        ]);
+
     }
 
-    public function edit($id)
-    {
-        //
-    }
+    public function edit($id){}
+    public function update(Request $request, $id){}
+    public function destroy($id){}
+    
 
-    public function update(Request $request, $id)
+    public function graph($id)
     {
-        //
+        $circle = Circle::find($id);
+        
+        $data = [
+            'circle' => $circle,
+        ];
+        
+        return view('circles.graph', $data);
     }
-
-    public function destroy($id)
+    
+    public function input_list($id)
     {
-        //
+        $circle = Circle::find($id);
+        
+        $data = [
+            'circle' => $circle,
+        ];
+        
+        return view('circles.list', $data);
     }
+    
 }

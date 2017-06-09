@@ -33,10 +33,15 @@ class User extends Model implements AuthenticatableContract,
     // 共通処理
     // 
     
-    // ユーザに関連するcircle_userリストを取得
+    // ユーザに関連するサークルリストを取得
     public function circles()
     {
         return $this->belongsToMany(Circle::class)->withPivot('state')->withTimestamps();
+    }
+    // 参加済みのサークルリストを取得
+    public function joinedCircles()
+    {
+        return $this->circles()->where('state', self::STATE_JOIN)->get();
     }
     
     // 中間テーブルに情報が存在しているか

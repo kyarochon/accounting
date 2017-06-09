@@ -4,17 +4,10 @@
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading text-center">
-                        画像が入る
+                        {!! link_to_route('circles.show', $circle->name, ['id' => $circle->id]) !!}
                     </div>
                     <div class="panel-body">
-                        <p class="item-title">
-                            {{$circle->name}}
-                        </p>
-                        <div class="buttons text-center">
-                            @if (Auth::check())
-                                @include('circles.request_button', ['circle' => $circle])
-                            @endif
-                        </div>
+                        <img class="media-object img-rounded img-responsive" src="{{ Gravatar::src($circle->image_name, 200) }}" alt="">
                     </div>
                 </div>
             </div>

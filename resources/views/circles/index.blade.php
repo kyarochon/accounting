@@ -14,5 +14,5 @@
         </div>
     </div>
 
-    @include('circles.circles', ['circles' => $circles])
+    @include('circles.circles_request', ['circles' => $circles])
 @endsection

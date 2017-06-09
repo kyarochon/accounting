@@ -11,7 +11,15 @@ class WelcomeController extends Controller
 {
     public function index()
     {
-        return view('welcome');
+        $circles = [];
+        if (\Auth::check())
+        {
+            $circles = \Auth::user()->joinedCircles();
+        }
+        
+        return view('welcome', [
+            'circles' => $circles,
+        ]);
     }
 
     public function create()

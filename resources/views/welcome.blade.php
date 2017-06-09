@@ -1,15 +1,19 @@
 @extends('layouts.app')
 
-@section('cover')
-    <div class="cover">
-        <div class="cover-inner">
-            <div class="cover-contents">
-                <h1>会計管理をより簡単に</h1>
+@if (!Auth::check())
+    @section('cover')
+        <div class="cover">
+            <div class="cover-inner">
+                <div class="cover-contents">
+                    <h1>会計管理をより簡単に</h1>
+                </div>
             </div>
         </div>
-    </div>
-@endsection
+    @endsection
+@else
+    @section('content')
+        @include('circles.circles', ['circles' => $circles])
+    @endsection
+@endif
+    
 
-@section('content')
-内容をこちらに
-@endsection
