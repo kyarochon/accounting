@@ -41,7 +41,7 @@ class User extends Model implements AuthenticatableContract,
     // 参加済みのサークルリストを取得
     public function joinedCircles()
     {
-        return $this->circles()->where('state', self::STATE_JOIN)->get();
+        return $this->circles()->where('state', \Config::get('const.STATE_JOIN'))->get();
     }
     
     // 中間テーブルに情報が存在しているか
@@ -55,10 +55,10 @@ class User extends Model implements AuthenticatableContract,
     {
         if ($this->existsCircleState($circleId)) 
         {
-            $this->circles()->detach($circleId);
+            \DB::update("UPDATE circle_user SET state = ? WHERE user_id = ? AND circle_id = ?", [$state, \Auth::user()->id, $circleId]);
+        } else {
+            $this->circles()->attach($circleId, ['state' => $state]);
         }
-        
-        $this->circles()->attach($circleId, ['state' => $state]);
     }
     
 
@@ -70,7 +70,7 @@ class User extends Model implements AuthenticatableContract,
     public function request($circleId)
     {
         if (!$this->canRequest($circleId)) return false;
-        $this->updateState($circleId, self::STATE_REQUEST);
+        $this->updateState($circleId, \Config::get('const.STATE_REQUEST'));
         return true;
     }
     
@@ -78,7 +78,7 @@ class User extends Model implements AuthenticatableContract,
     public function cancelRequest($circleId)
     {
         if (!$this->canCancelRequest($circleId)) return false;
-        $this->updateState($circleId, self::STATE_NONE);
+        $this->updateState($circleId, \Config::get('const.STATE_NONE'));
         return true;
     }
     
@@ -88,13 +88,13 @@ class User extends Model implements AuthenticatableContract,
         // そもそも情報が存在していなければ申請可能
         if (!$this->existsCircleState($circleId)) return true;
         
-        $notJoinedCircles = $this->circles()->where('state', self::STATE_NONE);
+        $notJoinedCircles = $this->circles()->where('state', \Config::get('const.STATE_NONE'));
         return $notJoinedCircles->where('circle_id', $circleId)->exists();
     }
     // リクエストキャンセル可能かどうか（リクエスト中のサークルにのみ可能）
     public function canCancelRequest($circleId)
     {
-        $requestedCircles = $this->circles()->where('state', self::STATE_REQUEST);
+        $requestedCircles = $this->circles()->where('state', \Config::get('const.STATE_REQUEST'));
         return $requestedCircles->where('circle_id', $circleId)->exists();
     }
     
@@ -107,14 +107,14 @@ class User extends Model implements AuthenticatableContract,
     public function join($circleId)
     {
         if ($this->hasJoined($circleId)) return false;
-        $this->updateState($circleId, self::STATE_JOIN);
+        $this->updateState($circleId, \Config::get('const.STATE_JOIN'));
         return true;
     }
     
     // 参加済かどうか
     public function hasJoined($circleId)
     {
-        $joinedCircles = $this->circles()->where('state', self::STATE_JOIN);
+        $joinedCircles = $this->circles()->where('state', \Config::get('const.STATE_JOIN'));
         return $joinedCircles->where('circle_id', $circleId)->exists();
     }
 
