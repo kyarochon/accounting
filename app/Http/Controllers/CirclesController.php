@@ -8,6 +8,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
 use App\Circle;
+use App\CirclePayment;
 
 class CirclesController extends Controller
 {
@@ -78,12 +79,38 @@ class CirclesController extends Controller
     public function input_list($id)
     {
         $circle = Circle::find($id);
-        
+        $circlePayments = CirclePayment::where('circle_id', $id)->get();
+
+        $totalFee = 0;
+        foreach ($circlePayments as $circlePayment)
+        {
+            if ($circlePayment->type == \Config::get('const.TYPE_INCOME')) {
+                $totalFee += $circlePayment->payments;
+            } else {
+                $totalFee -= $circlePayment->payments;
+            }
+        }
+
         $data = [
             'circle' => $circle,
+            'circle_payments' => $circlePayments,
+            'total_fee' => $totalFee,
         ];
         
         return view('circles.list', $data);
+    }
+    
+    public function member($id)
+    {
+        $circle = Circle::find($id);
+        $users = $circle->users()->get();
+        
+        $data = [
+            'circle' => $circle,
+            'users'  => $users,
+        ];
+        
+        return view('circles.member', $data);
     }
     
 }

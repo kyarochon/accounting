@@ -3,6 +3,9 @@
 @section('content')
     <div class="row">
         <div class="col-xs-12">
+            <button class="btn btn-info pull-right" onclick="location.href='{{ route('circles.member', ['id' => $circle->id]) }}'">メンバー管理</button>
+        </div>
+        <div class="col-xs-12" style="margin-top:20px;">
             <ul class="nav nav-tabs nav-justified">
                 <li role="presentation" class="{{ Request::is('circles/' . $circle->id) ? 'active' : '' }}"><a href="{{ route('circles.show', ['id' => $circle->id]) }}">収支</a></li>
                 <li role="presentation" class="{{ Request::is('circles/*/graph') ? 'active' : '' }}"><a href="{{ route('circles.graph', ['id' => $circle->id]) }}">グラフ</a></li>
@@ -10,7 +13,8 @@
             </ul>
         </div>
         <div class="col-xs-offset-1 col-xs-10" style="margin-top:20px;">
-            {!! Form::open(['route' => 'circles.index', 'method' => 'get', 'class' => 'form-inline']) !!}
+            {!! Form::open(['route' => 'circle_payments.store', 'method' => 'post', 'class' => 'form-inline']) !!}
+            {!! Form::hidden('circle_id', $circle->id); !!}
             <table class="table table-bordered table-hover table-striped">
                 <tr>
                     <td class="col-xs-2">日付</td>
@@ -26,8 +30,15 @@
                         {!! Form::select(
                             'category',
                             [
-                                '収入' => ['0' => '会費', '1' => '雑費'],
-                                '支出' => ['2' => '消耗品費', '3' => '施設利用費', '4' => 'イベント参加費']
+                                '収入' => [
+                                    '0' => \Config::get('const.CATEGORY_NAME')[0],
+                                    '1' => \Config::get('const.CATEGORY_NAME')[1]
+                                ],
+                                '支出' => [
+                                    '2' => \Config::get('const.CATEGORY_NAME')[2],
+                                    '3' => \Config::get('const.CATEGORY_NAME')[3],
+                                    '4' => \Config::get('const.CATEGORY_NAME')[4]
+                                ]
                             ],
                             null,
                             ['class' => 'form-control', 'placeholder' => '選択してください']

@@ -27,22 +27,18 @@ Route::get('logout', 'Auth\AuthController@getLogout')->name('logout.get');
 Route::group(['middleware' => 'auth'], function () {
     Route::resource('users', 'UsersController', ['only' => 'show']);
     Route::resource('circles', 'CirclesController');
+    Route::resource('circle_payments', 'CirclePaymentsController');
     
     // リクエスト関連
     Route::post('request', 'CircleUserController@request')->name('circle_user.request');
     Route::delete('request', 'CircleUserController@cancelRequest')->name('circle_user.cancel_request');
-    
-    
+
     // サークル関連
     Route::group(['prefix' => 'circles/{id}'], function () { 
         // ページ表示
         Route::get('graph', 'CirclesController@graph')->name('circles.graph');
         Route::get('list', 'CirclesController@input_list')->name('circles.list');
         Route::get('member', 'CirclesController@member')->name('circles.member');
-        
-        // データやり取り
-        // Route::post('follow', 'UserFollowController@store')->name('user.follow');
-        // Route::delete('unfollow', 'UserFollowController@destroy')->name('user.unfollow');
     });
     
     

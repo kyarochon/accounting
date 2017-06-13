@@ -18,17 +18,12 @@ class User extends Model implements AuthenticatableContract,
 {
     use Authenticatable, Authorizable, CanResetPassword;
     
-    protected $table = 'users';
+
+    protected $table    = 'users';
     protected $fillable = ['name', 'email', 'password'];
-    protected $hidden = ['password', 'remember_token'];
+    protected $hidden   = ['password', 'remember_token'];
     
-    // state
-    const STATE_NONE    = 0;
-    const STATE_REQUEST = 1;
-    const STATE_REFUSE  = 2;
-    const STATE_JOIN    = 3;
-    
-    
+
     // 
     // 共通処理
     // 
@@ -116,6 +111,19 @@ class User extends Model implements AuthenticatableContract,
     {
         $joinedCircles = $this->circles()->where('state', \Config::get('const.STATE_JOIN'));
         return $joinedCircles->where('circle_id', $circleId)->exists();
+    }
+    
+    
+    public function getStateText($state)
+    {
+        switch ($state) {
+            case \Config::get('const.STATE_NONE'):    return "非メンバー";
+            case \Config::get('const.STATE_REQUEST'): return "リクエスト中";
+            case \Config::get('const.STATE_REFUSE'):  return "却下済";
+            case \Config::get('const.STATE_JOIN'):    return "メンバー";
+            default: return "";
+        }
+        return "";
     }
 
 }
