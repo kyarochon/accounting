@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests;
 use App\Http\Controllers\Controller;
 
+use App\User;
 use App\Circle;
 
 class CircleUserController extends Controller
@@ -34,5 +35,39 @@ class CircleUserController extends Controller
             $user->cancelRequest($circleId);
         }
         return redirect()->back();
+    }
+    
+    
+    public function acceptRequest()
+    {
+        $circleId = request()->circleId;
+        $userId   = request()->userId;
+        
+        $user = User::find($userId);
+        $user->acceptRequest($circleId);
+
+        return redirect()->back();
+    }
+    
+    public function rejectRequest()
+    {
+        $circleId = request()->circleId;
+        $userId   = request()->userId;
+
+        $user = User::find($userId);
+        $user->rejectRequest($circleId);
+
+        return redirect()->back();
+    }
+    
+    public function leave()
+    {
+        $circleId = request()->circleId;
+        $userId   = request()->userId;
+
+        $user = User::find($userId);
+        $user->leave($circleId);
+
+        return redirect("/");
     }
 }

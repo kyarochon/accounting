@@ -50,7 +50,7 @@ class User extends Model implements AuthenticatableContract,
     {
         if ($this->existsCircleState($circleId)) 
         {
-            \DB::update("UPDATE circle_user SET state = ? WHERE user_id = ? AND circle_id = ?", [$state, \Auth::user()->id, $circleId]);
+            \DB::update("UPDATE circle_user SET state = ? WHERE user_id = ? AND circle_id = ?", [$state, $this->id, $circleId]);
         } else {
             $this->circles()->attach($circleId, ['state' => $state]);
         }
@@ -76,6 +76,21 @@ class User extends Model implements AuthenticatableContract,
         $this->updateState($circleId, \Config::get('const.STATE_NONE'));
         return true;
     }
+    
+    // 参加リクエスト承認
+    public function acceptRequest($circleId)
+    {
+        $this->updateState($circleId, \Config::get('const.STATE_JOIN'));
+        return true;
+    }
+    
+    // 参加リクエスト却下
+    public function rejectRequest($circleId)
+    {
+        $this->updateState($circleId, \Config::get('const.STATE_REFUSE'));
+        return true;
+    }
+    
     
     // リクエスト申請可能かどうか（参加していないサークルにのみ可能）
     public function canRequest($circleId)
@@ -103,6 +118,13 @@ class User extends Model implements AuthenticatableContract,
     {
         if ($this->hasJoined($circleId)) return false;
         $this->updateState($circleId, \Config::get('const.STATE_JOIN'));
+        return true;
+    }
+    
+    // 退会
+    public function leave($circleId)
+    {
+        $this->updateState($circleId, \Config::get('const.STATE_NONE'));
         return true;
     }
     

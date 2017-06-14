@@ -29,9 +29,12 @@ Route::group(['middleware' => 'auth'], function () {
     Route::resource('circles', 'CirclesController');
     Route::resource('circle_payments', 'CirclePaymentsController');
     
-    // リクエスト関連
-    Route::post('request', 'CircleUserController@request')->name('circle_user.request');
-    Route::delete('request', 'CircleUserController@cancelRequest')->name('circle_user.cancel_request');
+    // circle_user
+    Route::post('circle_user/request', 'CircleUserController@request')->name('circle_user.request');
+    Route::delete('circle_user/cancel_request', 'CircleUserController@cancelRequest')->name('circle_user.cancel_request');
+    Route::post('circle_user/accept_request', 'CircleUserController@acceptRequest')->name('circle_user.accept_request');
+    Route::delete('circle_user/reject_request', 'CircleUserController@rejectRequest')->name('circle_user.reject_request');
+    Route::post('circle_user/leave', 'CircleUserController@leave')->name('circle_user.leave');
 
     // サークル関連
     Route::group(['prefix' => 'circles/{id}'], function () { 
