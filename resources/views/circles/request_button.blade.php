@@ -10,4 +10,6 @@
     {!! Form::close() !!}
 @elseif (Auth::user()->hasJoined($circle->id))
     参加済
+@elseif (Auth::user()->hasRejected($circle->id))
+    却下済
 @endif

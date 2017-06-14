@@ -135,6 +135,12 @@ class User extends Model implements AuthenticatableContract,
         return $joinedCircles->where('circle_id', $circleId)->exists();
     }
     
+    // 却下済かどうか
+    public function hasRejected($circleId)
+    {
+        $rejectedCircles = $this->circles()->where('state', \Config::get('const.STATE_REFUSE'));
+        return $rejectedCircles->where('circle_id', $circleId)->exists();
+    }
     
     public function getStateText($state)
     {

@@ -8,15 +8,13 @@
         <div class="col-xs-offset-1 col-xs-10" style="margin-top:20px;">
             <table class="table table-bordered table-hover table-striped">
                 <tr>
-			        <th>氏名</th>
-			        <th>アドレス</th>
-			        <th>メンバータイプ</th>
+			        <th>アカウント名</th>
+			        <th>状態</th>
 			        <th>管理</th>
 		        </tr>
                 @foreach ($users as $user)
                 <tr>
-                    <td>{{$user->name}}</td>
-                    <td>{{$user->email}}</td>
+                    <td><a href="{{ route('users.show', $user->id) }}">{{$user->name}}</a></td>
                     <td>{{$user->getStateText($user->pivot->state)}}</td>
                     
                     @if ($user->pivot->state == \Config::get('const.STATE_REQUEST'))

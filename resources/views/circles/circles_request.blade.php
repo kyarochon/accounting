@@ -1,14 +1,14 @@
 @if ($circles)
-    <div class="row">
+    <div class="row" style="margin-top:20px;">
         @foreach ($circles as $circle)
             <div class="col-md-3 col-sm-4 col-xs-12">
                 <div class="panel panel-default">
                     <div class="panel-heading text-center">
-                        画像が入る
+                        {{$circle->name}}
                     </div>
                     <div class="panel-body">
                         <p class="item-title">
-                            {{$circle->name}}
+                            <img class="media-object img-rounded img-responsive" src="{{ Gravatar::src($circle->name . $circle->image_name, 200) }}" alt="">
                         </p>
                         <div class="buttons text-center">
                             @if (Auth::check())
