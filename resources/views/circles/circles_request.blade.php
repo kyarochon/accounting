@@ -8,7 +8,7 @@
                     </div>
                     <div class="panel-body">
                         <p class="item-title">
-                            <img class="media-object img-rounded img-responsive" src="{{ Gravatar::src($circle->name . $circle->image_name, 200) }}" alt="">
+                            <img class="media-object img-rounded img-responsive center-block" src="{{ Gravatar::src($circle->name . $circle->image_name, 200) }}" alt="">
                         </p>
                         <div class="buttons text-center">
                             @if (Auth::check())

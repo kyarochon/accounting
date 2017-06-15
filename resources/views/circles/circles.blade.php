@@ -7,7 +7,7 @@
                         {!! link_to_route('circles.show', $circle->name, ['id' => $circle->id]) !!}
                     </div>
                     <div class="panel-body">
-                        <img class="media-object img-rounded img-responsive" src="{{ Gravatar::src($circle->name . $circle->image_name, 200) }}" alt="">
+                        <img class="media-object img-rounded img-responsive center-block" src="{{ Gravatar::src($circle->name . $circle->image_name, 200) }}" alt="">
                     </div>
                 </div>
             </div>
