@@ -1,3 +1,23 @@
+
+<?php
+    // カテゴリ選択肢を自動で作成
+    
+    // 収入
+    $incomeSelectList = array();
+    $incomeCategories = \Config::get('const.INCOME_CATEGORIES');
+    foreach ($incomeCategories as $incomeCategory) {
+        $incomeSelectList[$incomeCategory] = \Config::get('const.CATEGORY_NAME')[$incomeCategory];
+    }
+    
+    // 支出
+    $spendingSelectList = array();
+    $spendingCategories = \Config::get('const.SPENDING_CATEGORIES');
+    foreach ($spendingCategories as $spendingCategory) {
+        $spendingSelectList[$spendingCategory] = \Config::get('const.CATEGORY_NAME')[$spendingCategory];
+    }
+?>
+                        
+                        
 @extends('layouts.app')
 
 @section('content')
@@ -18,11 +38,11 @@
             <table class="table table-bordered table-hover table-striped">
                 <tr>
                     <td class="col-xs-2">日付</td>
-                    <td class="col-xs-8">{!! Form::date('date', null, ['class' => 'form-control']) !!}</td>
+                    <td class="col-xs-8">{!! Form::date('date', null, array('required' => 'required'), ['class' => 'form-control']) !!}</td>
                 </tr>
                 <tr>
                     <td class="col-xs-2">収支種別</td>
-                    <td class="col-xs-8">{!! Form::select('type', ['0' => '収入', '1' => '支出'], null, ['class' => 'form-control', 'placeholder' => '選択してください']) !!}</td>
+                    <td class="col-xs-8">{!! Form::select('type', ['0' => '収入', '1' => '支出'], null, array('required' => 'required'), ['class' => 'form-control', 'placeholder' => '選択してください']) !!}</td>
                 </tr>
                 <tr>
                     <td class="col-xs-2">カテゴリ</td>
@@ -30,28 +50,22 @@
                         {!! Form::select(
                             'category',
                             [
-                                '収入' => [
-                                    '0' => \Config::get('const.CATEGORY_NAME')[0],
-                                    '1' => \Config::get('const.CATEGORY_NAME')[1]
-                                ],
-                                '支出' => [
-                                    '2' => \Config::get('const.CATEGORY_NAME')[2],
-                                    '3' => \Config::get('const.CATEGORY_NAME')[3],
-                                    '4' => \Config::get('const.CATEGORY_NAME')[4]
-                                ]
+                                '収入' => $incomeSelectList,
+                                '支出' => $spendingSelectList
                             ],
                             null,
+                            array('required' => 'required'),
                             ['class' => 'form-control', 'placeholder' => '選択してください']
                         ) !!}
                     </td>
                 </tr>
                 <tr>
                     <td class="col-xs-2">内容</td>
-                    <td class="col-xs-8">{!! Form::text('text', null, ['class' => 'form-control', 'placeholder' => '例：シャトル代']) !!}</td>
+                    <td class="col-xs-8">{!! Form::text('text', null, array('required' => 'required'), ['class' => 'form-control', 'placeholder' => '例：シャトル代']) !!}</td>
                 </tr>
                 <tr>
                     <td class="col-xs-2">金額</td>
-                    <td class="col-xs-8">{!! Form::number('payments', 0, ['class' => 'form-control', 'min' => 0, 'step' => 1, 'placeholder' => '例：2500']) !!}</td>
+                    <td class="col-xs-8">{!! Form::number('payments', 0, array('required' => 'required'), ['class' => 'form-control', 'min' => '0', 'step' => '1', 'placeholder' => '例：2500']) !!}</td>
                 </tr>
             </table>
             {!! Form::submit('登録', ['class' => 'btn btn-success']) !!}

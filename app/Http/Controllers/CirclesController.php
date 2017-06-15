@@ -68,9 +68,31 @@ class CirclesController extends Controller
     public function graph($id)
     {
         $circle = Circle::find($id);
-        
+
+        $incomeList   = [];
+        $incomeLabels = []; 
+        $incomeCategories = \Config::get('const.INCOME_CATEGORIES');
+        foreach ($incomeCategories  as $incomeCategory) {
+            $income = CirclePayment::where('circle_id', $id)->where('category', $incomeCategory)->sum('payments');
+            $incomeList[]   = $income;
+            $incomeLabels[] = \Config::get('const.CATEGORY_NAME')[$incomeCategory];
+        }
+
+        $spendingList = [];
+        $spendingLabels = []; 
+        $spendingCategories = \Config::get('const.SPENDING_CATEGORIES');
+        foreach ($spendingCategories  as $spendingCategory) {
+            $spending = CirclePayment::where('circle_id', $id)->where('category', $spendingCategory)->sum('payments');
+            $spendingList[]   = $spending;
+            $spendingLabels[] = \Config::get('const.CATEGORY_NAME')[$spendingCategory];
+        }
+
         $data = [
-            'circle' => $circle,
+            'circle'          => $circle,
+            'income_list'     => $incomeList,
+            'income_labels'   => $incomeLabels,
+            'spending_list'   => $spendingList,
+            'spending_labels' => $spendingLabels,
         ];
         
         return view('circles.graph', $data);
@@ -79,7 +101,7 @@ class CirclesController extends Controller
     public function input_list($id)
     {
         $circle = Circle::find($id);
-        $circlePayments = CirclePayment::where('circle_id', $id)->get();
+        $circlePayments = CirclePayment::where('circle_id', $id)->orderBy('date', 'desc')->get();
 
         $totalFee = 0;
         foreach ($circlePayments as $circlePayment)
